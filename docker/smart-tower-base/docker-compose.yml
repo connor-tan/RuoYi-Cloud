@@ -1,0 +1,137 @@
+services:
+  tower-redis:
+    container_name: tower-redis
+    image: tower-redis
+    build:
+      context: ./redis
+    ports:
+      - "${REDIS_PORT}:6379"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./redis/conf/redis.conf:/home/fanttec/redis/redis.conf
+      - ./redis/data:/home/fanttec/redis/data
+    healthcheck:
+      test: [ "CMD", "redis-cli" , "ping" ]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+    restart: always
+  tower-mysql:
+    container_name: tower-mysql
+    image: tower-mysql
+    build:
+      context: ./mysql
+      dockerfile: dockerfile
+    ports:
+      - "${MYSQL_PORT}:3306"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./mysql/conf:/etc/mysql/conf.d
+      - ./mysql/logs:/logs
+      - ./mysql/data:/var/lib/mysql
+    command:
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+      --max_allowed_packet=128M;
+      --innodb-buffer-pool-size=80M
+    env_file:
+      - ./mysql/mysql.env
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+    restart: always
+  tower-nacos:
+    container_name: tower-nacos
+    image: nacos/nacos-server
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./nacos/logs/:/home/nacos/logs
+    ports:
+      - "8849:8080"
+      - "8848:8848"
+      - "9848:9848"
+    env_file:
+      - ./nacos/nacos-standalone-mysql.env
+    healthcheck:
+      test: [ "CMD", "curl" ,"-f", "http://localhost:8080/nacos" ]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+    depends_on:
+      tower-mysql:
+        condition: service_healthy
+    restart: always
+  tower-rocketmq-nameserver:
+    image: apache/rocketmq:5.3.1
+    container_name: tower-rocketmq-nameserver
+    ports:
+      - "9876:9876"
+    command: sh mqnamesrv
+  tower-rocketmq-broker:
+    image: apache/rocketmq:5.3.1
+    container_name: tower-rocketmq-broker
+    ports:
+      - "10909:10909"
+      - "10911:10911"
+      - "10912:10912"
+    environment:
+      - NAMESRV_ADDR=tower-rocketmq-nameserver:9876
+    depends_on:
+      - tower-rocketmq-nameserver
+    volumes:
+      - ./rocketmq/broker.conf:/home/rocketmq/rocketmq-5.3.1/conf/broker.conf
+    command: sh mqbroker -c /home/rocketmq/rocketmq-5.3.1/conf/broker.conf
+  tower-rocketmq-proxy:
+    image: apache/rocketmq:5.3.1
+    container_name: tower-rocketmq-proxy
+    depends_on:
+      - tower-rocketmq-broker
+      - tower-rocketmq-nameserver
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    restart: on-failure
+    environment:
+      - NAMESRV_ADDR=tower-rocketmq-nameserver:9876
+    command: sh mqproxy
+  tower-rocketmq-dashboard:
+    image: apacherocketmq/rocketmq-dashboard
+    container_name: tower-rocketmq-dashboard
+    ports:
+      - "8888:8080"
+    environment:
+      - JAVA_OPTS=-Drocketmq.namesrv.addr=tower-rocketmq-nameserver:9876
+    depends_on:
+      - tower-rocketmq-nameserver
+      - tower-rocketmq-broker
+      - tower-rocketmq-proxy
+  tower-activemq:
+    build:
+      context: ./activemq
+      dockerfile: dockerfile
+    image: tower-activemq
+    container_name: tower-activemq
+    restart: always
+    expose:
+      - 61616
+      - 8161
+    ports:
+      - "61616:61616"
+      - "5672:5672"
+      - "61613:61613"
+      - "1883:1883"
+      - "61614:61614"
+      - "8161:8161"
+    env_file:
+      - ./activemq/activemq.env
+    volumes:
+      - ./activemq/data:/opt/activemq/data
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -u $$ACTIVEMQ_USER:$$ACTIVEMQ_PASSWORD -f http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,service=Health/CurrentStatus" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3

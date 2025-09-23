@@ -1,0 +1,14 @@
+# 基础镜像
+FROM redis
+# author
+MAINTAINER fanttec
+
+# 创建目录
+RUN mkdir -p /home/fanttec/redis/data
+# 指定路径
+WORKDIR /home/tower/redis
+# 复制conf文件到路径
+COPY ./conf/redis.conf /home/fanttec/redis/redis.conf
+
+ENTRYPOINT ["redis-server"]
+CMD ["/home/fanttec/redis/redis.conf"]
