@@ -48,8 +48,12 @@ public final class SpringUtils implements BeanFactoryPostProcessor
      */
     public static <T> T getBean(Class<T> clz) throws BeansException
     {
-        T result = (T) beanFactory.getBean(clz);
-        return result;
+        return (T) beanFactory.getBean(clz);
+    }
+
+    public static <T> T getBean(String name ,Class<T> clz) throws BeansException
+    {
+        return (T) beanFactory.getBean(name,clz);
     }
 
     /**
@@ -110,5 +114,9 @@ public final class SpringUtils implements BeanFactoryPostProcessor
     public static <T> T getAopProxy(T invoker)
     {
         return (T) AopContext.currentProxy();
+    }
+
+    public static void registerSingleton(String name,Object bean){
+        beanFactory.registerSingleton(name,bean);
     }
 }

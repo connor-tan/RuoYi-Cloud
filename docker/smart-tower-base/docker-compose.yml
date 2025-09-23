@@ -46,12 +46,11 @@ services:
     restart: always
   tower-nacos:
     container_name: tower-nacos
-    image: nacos/nacos-server
+    image: nacos/nacos-server:v2.3.2
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./nacos/logs/:/home/nacos/logs
     ports:
-      - "8849:8080"
       - "8848:8848"
       - "9848:9848"
     env_file:

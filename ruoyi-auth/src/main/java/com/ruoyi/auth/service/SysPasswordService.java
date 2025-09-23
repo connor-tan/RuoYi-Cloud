@@ -18,8 +18,7 @@ import com.ruoyi.system.api.domain.SysUser;
 @Component
 public class SysPasswordService
 {
-    @Autowired
-    private RedisService redisService;
+    private final RedisService redisService;
 
     private int maxRetryCount = CacheConstants.PASSWORD_MAX_RETRY_COUNT;
 
@@ -27,6 +26,10 @@ public class SysPasswordService
 
     @Autowired
     private SysRecordLogService recordLogService;
+
+    SysPasswordService(RedisService redisService){
+        this.redisService = redisService;
+    }
 
     /**
      * 登录账户密码错误次数缓存键名

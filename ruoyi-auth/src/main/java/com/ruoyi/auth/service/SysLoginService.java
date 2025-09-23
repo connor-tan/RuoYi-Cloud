@@ -36,9 +36,11 @@ public class SysLoginService
     @Autowired
     private SysRecordLogService recordLogService;
 
-    @Autowired
-    private RedisService redisService;
+    private final RedisService redisService;
 
+    SysLoginService(RedisService redisService){
+        this.redisService = redisService;
+    }
     /**
      * 登录
      */

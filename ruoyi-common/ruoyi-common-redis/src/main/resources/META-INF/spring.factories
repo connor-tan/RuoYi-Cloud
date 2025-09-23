@@ -1,0 +1,6 @@
+#Initializers
+org.springframework.context.ApplicationContextInitializer=\
+  com.ruoyi.common.redis.initializer.RedisDbApplicationContextInitializer
+# Failure Analyzers
+org.springframework.boot.diagnostics.FailureAnalyzer=\
+  com.ruoyi.common..redis.diagnostics.analyzer.RedisIdentifierFailureAnalyzer

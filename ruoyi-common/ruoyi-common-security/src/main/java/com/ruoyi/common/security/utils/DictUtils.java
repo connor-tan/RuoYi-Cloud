@@ -9,6 +9,8 @@ import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.redis.service.RedisService;
 import com.ruoyi.system.api.domain.SysDictData;
 
+import static com.ruoyi.common.redis.common.RedisBeanNames.DEFAULT_REDIS_SERVICE;
+
 /**
  * 字典工具类
  * 
@@ -24,7 +26,7 @@ public class DictUtils
      */
     public static void setDictCache(String key, List<SysDictData> dictDatas)
     {
-        SpringUtils.getBean(RedisService.class).setCacheObject(getCacheKey(key), dictDatas);
+        SpringUtils.getBean(DEFAULT_REDIS_SERVICE,RedisService.class).setCacheObject(getCacheKey(key), dictDatas);
     }
 
     /**
@@ -59,7 +61,7 @@ public class DictUtils
     public static void clearDictCache()
     {
         Collection<String> keys = SpringUtils.getBean(RedisService.class).keys(CacheConstants.SYS_DICT_KEY + "*");
-        SpringUtils.getBean(RedisService.class).deleteObject(keys);
+        SpringUtils.getBean(DEFAULT_REDIS_SERVICE,RedisService.class).deleteObject(keys);
     }
 
     /**

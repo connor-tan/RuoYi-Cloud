@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
+import com.ruoyi.common.redis.RedisTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +20,13 @@ import org.springframework.stereotype.Component;
  * @author ruoyi
  **/
 @SuppressWarnings(value = { "unchecked", "rawtypes" })
-@Component
 public class RedisService
 {
-    @Autowired
-    public RedisTemplate redisTemplate;
+    private RedisTemplate redisTemplate;
+
+    public RedisService(RedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
     /**
      * 缓存基本的对象，Integer、String、实体类等
@@ -264,5 +267,18 @@ public class RedisService
     public Collection<String> keys(final String pattern)
     {
         return redisTemplate.keys(pattern);
+    }
+
+    /**
+     * 切换redis连接的数据库
+     * @param dbNum redis数据库的编号
+     * @return {@link RedisService}
+     */
+    public RedisService setDB(int dbNum) {
+        RedisTemplate.REDIS_DB_INDEX.set(dbNum);
+        return this;
+    }
+    public RedisTemplate getCurrentRedisTemplate() {
+        return this.redisTemplate;
     }
 }

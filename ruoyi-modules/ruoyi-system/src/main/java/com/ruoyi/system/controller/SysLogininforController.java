@@ -35,8 +35,11 @@ public class SysLogininforController extends BaseController
     @Autowired
     private ISysLogininforService logininforService;
 
-    @Autowired
-    private RedisService redisService;
+    private final RedisService redisService;
+
+    SysLogininforController(RedisService redisService){
+        this.redisService = redisService;
+    }
 
     @RequiresPermissions("system:logininfor:list")
     @GetMapping("/list")

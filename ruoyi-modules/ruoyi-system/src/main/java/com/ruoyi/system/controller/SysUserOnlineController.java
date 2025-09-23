@@ -35,8 +35,10 @@ public class SysUserOnlineController extends BaseController
     @Autowired
     private ISysUserOnlineService userOnlineService;
 
-    @Autowired
-    private RedisService redisService;
+    private final RedisService redisService;
+    SysUserOnlineController(RedisService redisService){
+        this.redisService = redisService;
+    }
 
     @RequiresPermissions("monitor:online:list")
     @GetMapping("/list")

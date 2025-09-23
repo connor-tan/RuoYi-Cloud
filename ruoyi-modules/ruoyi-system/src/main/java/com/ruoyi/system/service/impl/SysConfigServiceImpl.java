@@ -26,8 +26,10 @@ public class SysConfigServiceImpl implements ISysConfigService
     @Autowired
     private SysConfigMapper configMapper;
 
-    @Autowired
-    private RedisService redisService;
+    private final RedisService redisService;
+    SysConfigServiceImpl(RedisService redisService){
+        this.redisService = redisService;
+    }
 
     /**
      * 项目启动时，初始化参数到缓存
