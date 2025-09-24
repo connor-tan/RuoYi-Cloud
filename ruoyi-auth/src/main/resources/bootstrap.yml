@@ -6,7 +6,7 @@ server:
 spring: 
   application:
     # 应用名称
-    name: ruoyi-auth
+    name: tower-auth
   profiles:
     # 环境配置
     active: dev
@@ -14,14 +14,16 @@ spring:
     nacos:
       discovery:
         # 服务注册地址
-        server-addr: 172.16.20.236:8848
+        server-addr: ${tower.nacos.server}:${tower.nacos.port}
+        namespace: ${tower.nacos.namespace}
       config:
         # 配置中心地址
-        server-addr: 172.16.20.236:8848
+        server-addr: ${tower.nacos.server}:${tower.nacos.port}
         # 配置文件格式
         file-extension: yml
         # 共享配置
         shared-configs:
           - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+        namespace: ${tower.nacos.namespace}
       username: nacos
       password: nacos

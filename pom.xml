@@ -234,6 +234,21 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.yml</include>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.imports</include>
+                    <include>**/*.factories</include>
+                    <include>**/*.txt</include>
+                    <include>**/*.json</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -261,7 +276,44 @@
                         </execution>
                     </executions>
                 </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.2.0</version>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <addClasspath>true</addClasspath>
+                                <!-- MANIFEST.MF 中 Class-Path 加入前缀 -->
+                                <classpathPrefix>lib/</classpathPrefix>
+                                <!-- jar包不包含唯一版本标识 -->
+                                <useUniqueVersions>false</useUniqueVersions>
+                            </manifest>
+                        </archive>
+                        <outputDirectory>${project.build.directory}</outputDirectory>
+                    </configuration>
+                </plugin>
+                <!--复制关联JAR包到指定lib打包目录 ，target目录下的文件夹下，按需修改 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>copy-dependencies</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>copy-dependencies</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${project.build.directory}/lib/</outputDirectory>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
+
+
         </pluginManagement>
     </build>
 
@@ -290,4 +342,19 @@
         </pluginRepository>
     </pluginRepositories>
 
+    <profiles>
+        <profile>
+            <id>local</id>
+            <properties>
+                <spring.profiles.active>dev</spring.profiles.active>
+                <tower.nacos.server>61.160.108.46</tower.nacos.server>
+                <tower.nacos.port>28848</tower.nacos.port>
+                <tower.nacos.username>nacos</tower.nacos.username>
+                <tower.nacos.password>nacos</tower.nacos.password>
+                <tower.nacos.namespace>local</tower.nacos.namespace>
+                <tower.sentinel.server>61.160.108.46</tower.sentinel.server>
+                <tower.sentinel.port>28089</tower.sentinel.port>
+            </properties>
+        </profile>
+    </profiles>
 </project>

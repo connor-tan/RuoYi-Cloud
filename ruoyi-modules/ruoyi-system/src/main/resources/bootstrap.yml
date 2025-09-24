@@ -9,19 +9,21 @@ spring:
     name: tower-system
   profiles:
     # 环境配置
-    active: dev
+    active: ${spring.profiles.active}
   cloud:
     nacos:
       discovery:
         # 服务注册地址
-        server-addr: 192.168.101.66:8848
+        server-addr: ${tower.nacos.server}:${tower.nacos.port}
+        namespace: ${tower.nacos.namespace}
       config:
         # 配置中心地址
-        server-addr: 192.168.101.66:8848
+        server-addr: ${tower.nacos.server}:${tower.nacos.port}
         # 配置文件格式
         file-extension: yml
         # 共享配置
         shared-configs:
           - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+        namespace: ${tower.nacos.namespace}
       username: nacos
       password: nacos

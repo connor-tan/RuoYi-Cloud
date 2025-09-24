@@ -1,0 +1,18 @@
+FROM openjdk:21
+
+# author
+LABEL author fanttec
+
+# 创建目录
+RUN mkdir -p /opt/sentinel
+
+# 挂载目录
+VOLUME /opt/sentinel
+
+# 指定路径
+WORKDIR /opt/sentinel
+# 复制jar文件到路径
+COPY ./sentinel-dashboard-1.8.8.jar /opt/sentinel/sentinel-dashboard-1.8.8.jar
+
+# 启动服务
+ENTRYPOINT ["java","-Duser.timezone=Asia/Shanghai","-jar","sentinel-dashboard-1.8.8.jar"]
