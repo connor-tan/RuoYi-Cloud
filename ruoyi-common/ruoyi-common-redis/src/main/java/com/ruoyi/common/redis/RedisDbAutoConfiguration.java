@@ -1,6 +1,7 @@
 package com.ruoyi.common.redis;
 
 import com.ruoyi.common.core.utils.SpringUtils;
+import com.ruoyi.common.redis.common.FastJson2JsonRedisSerializer;
 import com.ruoyi.common.redis.connection.JedisDbConnectionConfiguration;
 import com.ruoyi.common.redis.connection.LettuceDbConnectionConfiguration;
 import com.ruoyi.common.redis.connection.PropertiesRedisDbConnectionDetails;
@@ -78,12 +79,13 @@ public class RedisDbAutoConfiguration implements InitializingBean, DisposableBea
         String defaultConfig = Objects.requireNonNull(redisDbProperties.getDefaultConfig(), "Redis默认标识不可为空");
         RedisTemplate<Object, Object> redisTemplate = null;
         for (Map.Entry<String, RedisProperties> entry : redisDbProperties.getConfig().entrySet()) {
+            FastJson2JsonRedisSerializer<Object> serializer = new FastJson2JsonRedisSerializer<>(Object.class);
             String key = entry.getKey();
             RedisTemplate<Object, Object> template = new RedisTemplate<>();
             template.setKeySerializer(stringSerializer());
-            template.setValueSerializer(jackson2JsonRedisSerializer());
+            template.setValueSerializer(serializer);
             template.setHashKeySerializer(stringSerializer());
-            template.setHashValueSerializer(jackson2JsonRedisSerializer());
+            template.setHashValueSerializer(serializer);
             if (defaultConfig.equals(key)) {
                 template.setConnectionFactory(redisConnectionFactory);
                 redisTemplate = template;

@@ -54,9 +54,23 @@
         </dependency>
 
         <!-- Mybatis Spring -->
+<!--        <dependency>-->
+<!--            <groupId>org.mybatis</groupId>-->
+<!--            <artifactId>mybatis-spring</artifactId>-->
+<!--        </dependency>-->
+
         <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis-spring</artifactId>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-jsqlparser</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.yulichang</groupId>
+            <artifactId>mybatis-plus-join-boot-starter</artifactId>
         </dependency>
 
         <!-- Hibernate Validator -->
