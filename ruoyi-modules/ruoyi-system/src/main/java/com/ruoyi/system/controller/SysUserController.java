@@ -185,6 +185,8 @@ public class SysUserController extends BaseController
             loginUser.setPermissions(permissions);
             tokenService.refreshToken(loginUser);
         }
+        LoginUser test = tokenService.test(loginUser);
+        System.out.println(test);
         AjaxResult ajax = AjaxResult.success();
         ajax.put("user", user);
         ajax.put("roles", roles);

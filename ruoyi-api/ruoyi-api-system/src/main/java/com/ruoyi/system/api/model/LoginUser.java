@@ -2,6 +2,9 @@ package com.ruoyi.system.api.model;
 
 import java.io.Serializable;
 import java.util.Set;
+
+import com.alibaba.fastjson2.JSONWriter;
+import com.alibaba.fastjson2.annotation.JSONField;
 import com.ruoyi.system.api.domain.SysUser;
 
 /**
@@ -46,11 +49,13 @@ public class LoginUser implements Serializable
     /**
      * 权限列表
      */
+    @JSONField
     private Set<String> permissions;
 
     /**
      * 角色列表
      */
+    @JSONField()
     private Set<String> roles;
 
     /**

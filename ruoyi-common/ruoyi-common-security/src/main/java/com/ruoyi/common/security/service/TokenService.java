@@ -167,6 +167,10 @@ public class TokenService
         redisService.setCacheObject(userKey, loginUser, TOKEN_EXPIRE_TIME, TimeUnit.MINUTES);
     }
 
+    public LoginUser test(LoginUser loginUser){
+        return redisService.getCacheObject(getTokenKey(loginUser.getToken()));
+    }
+
     private String getTokenKey(String token)
     {
         return ACCESS_TOKEN + token;
