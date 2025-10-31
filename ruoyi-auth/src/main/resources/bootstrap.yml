@@ -16,6 +16,7 @@ spring:
         # 服务注册地址
         server-addr: ${tower.nacos.server}:${tower.nacos.port}
         namespace: ${tower.nacos.namespace}
+#        ip: ${tower.auth.ip}
       config:
         # 配置中心地址
         server-addr: ${tower.nacos.server}:${tower.nacos.port}

@@ -382,6 +382,9 @@
                 <tower.nacos.namespace>local</tower.nacos.namespace>
                 <tower.sentinel.server>61.160.108.46</tower.sentinel.server>
                 <tower.sentinel.port>28089</tower.sentinel.port>
+                <tower.gateway.ip>172.16.20.105</tower.gateway.ip>
+                <tower.auth.ip>172.16.20.105</tower.auth.ip>
+                <tower.system.ip>172.16.20.105</tower.system.ip>
             </properties>
         </profile>
     </profiles>
